@@ -1,0 +1,148 @@
+package osmpackage;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class PatientsTable extends JPanel implements ActionListener, ListSelectionListener{
+	
+	private static final long serialVersionUID = 1L;
+	private JButton addButton, deleteButton;
+	private JTable patientTable;
+	private DefaultTableModel tableModel;
+	private JScrollPane scrollPane;
+
+	public PatientsTable()
+	{
+		addButton = new JButton("Dodaj");
+		addButton.addActionListener( this);
+		deleteButton = new JButton("Usuñ");
+		deleteButton.addActionListener(this);
+		
+		String columnNames[] = { "Imiê i Nazwisko", "P³eæ", "Pesel", "Ubezpieczenie", "Badanie" };
+		tableModel = new DefaultTableModel(columnNames, 0){
+			private static final long serialVersionUID = 1L;
+			public Class<?> getColumnClass(int columnIndex) {
+			    if (columnIndex == 4)
+			        return Boolean.class;
+			    return super.getColumnClass(columnIndex);
+			}
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
+		patientTable = new JTable(tableModel);
+		patientTable.setAutoCreateColumnsFromModel(true);
+		patientTable.getSelectionModel().addListSelectionListener(this);
+		scrollPane = new JScrollPane(patientTable);	
+		
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0,5,0,5);
+        c.weightx = 0.5;
+        c.weighty = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 6;
+        add(scrollPane, c);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0,10,0,10);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        add(addButton, c);
+        c.insets = new Insets(0,10,0,260);
+        c.gridx = 1;
+        c.gridy = 1;
+        add(deleteButton, c);
+   
+        setBorder(BorderFactory.createTitledBorder("Lista pacjentów")); 
+	}
+	
+	public void refreshPatientsTable()
+	{
+		removeTableSelection();
+		PatientsList patList = new PatientsList();
+		ArrayList<Patient> patients = patList.getPatientsList();
+		int rowCount = tableModel.getRowCount();
+		for(int i = 0; i < rowCount; i++)
+		{
+			tableModel.removeRow(rowCount-1 - i);
+		}
+		for(int i = 0; i < patients.size(); i++)
+		{
+			Patient patient = patients.get(i);
+			String name = patient.getPatientName() + " " + patient.getPatientSurname();
+			String sex = patient.getPatientSex();
+			String pesel = patient.getPatientPESEL();
+			String insurance = patient.getPatientInsurance();
+			boolean examination;
+			if(patient.getPatientDiastolic()!=0 && patient.getPatientSystolic() != 0 && patient.getPatientPulse() != 0)
+				{
+				examination = true;
+				}
+			else 
+				{
+				examination = false;
+				}
+			Object dane[] = {name, sex, pesel, insurance, examination};
+			tableModel.addRow(dane);
+		}
+	}
+	
+	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() == deleteButton)
+		{	
+			PatientsList patList = new PatientsList();
+			int id = patList.getCurrentPatientId();
+			if(id != -1){
+				patList.removePatient(id);
+				removeTableSelection();	
+			}
+			
+		}
+		if (event.getSource() == addButton)
+		{
+			removeTableSelection();
+			PatientForm patForm = MainWindow.getInstance().getPatForm();
+			Utility.setPanelEnabled(patForm,true);
+			PatientExamination patExam = MainWindow.getInstance().getPatExam();
+			Utility.setPanelEnabled(patExam,false);
+			PatientsList patList = new PatientsList();
+			patList.setCurrentPatientId(-1);
+		}
+	}
+	public void valueChanged(ListSelectionEvent arg0) {
+		
+		PatientsList patList = new PatientsList();
+		int id = patientTable.getSelectedRow();
+		patList.setCurrentPatientId(id);
+		if(!(id < 0)){
+			PatientForm patForm = MainWindow.getInstance().getPatForm();
+			PatientExamination patExam = MainWindow.getInstance().getPatExam();
+			
+			Utility.setPanelEnabled(patForm,true);
+			Utility.setPanelEnabled(patExam,true);
+					
+			ArrayList<Patient> patients = patList.getPatientsList();
+			Patient patient = patients.get(id);
+			patExam.setFields(patient);
+			patForm.setFields(patient);							
+		}
+	}		
+	public void removeTableSelection()
+	{
+		patientTable.clearSelection();
+	}
+}
+	
+
+

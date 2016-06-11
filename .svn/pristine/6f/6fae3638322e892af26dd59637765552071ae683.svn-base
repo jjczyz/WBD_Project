@@ -1,0 +1,65 @@
+package osmpackage;
+
+import java.util.ArrayList;
+
+public class PatientsList {
+	private static ArrayList<Patient> patients = new ArrayList<Patient>();
+	private static int currentPatientId=-1;
+	
+	public void  addPatient(String name, String surname, String pesel, String sex, String insurance)
+	{	
+		Patient pacjent = new Patient();
+		if(currentPatientId != -1)
+		{
+			pacjent = patients.get(currentPatientId);
+		}	
+		pacjent.setPatientName(name);
+		pacjent.setPatientSurname(surname);
+		pacjent.setPatientPesel(pesel);
+		pacjent.setPatientSex(sex);
+		pacjent.setPatientInsurance(insurance);
+		
+		if(currentPatientId != -1)
+		{
+			patients.set(currentPatientId, pacjent);
+		}
+		else
+		{			
+			patients.add(pacjent);
+		}
+		PatientsTable patTable = MainWindow.getInstance().getPatTable();
+		patTable.refreshPatientsTable(); 	
+	}
+	
+	public void addPatientExamination(int pulse, int systolic, int diastolic, String date)
+	{
+		Patient pacjent = new Patient();
+		pacjent = patients.get(currentPatientId);
+		pacjent.setPatientPulse(pulse);
+		pacjent.setPatientSystolic(systolic);
+		pacjent.setPatientDiastolic(diastolic);
+		pacjent.setPatientExaminationDate(date);
+		patients.set(currentPatientId, pacjent);
+		
+		PatientsTable patTable = MainWindow.getInstance().getPatTable();
+		patTable.refreshPatientsTable(); 	
+	}
+	public void removePatient(int Id)
+	{
+		patients.remove(Id);
+		PatientsTable patTable = MainWindow.getInstance().getPatTable();
+		patTable.refreshPatientsTable(); 	
+	}
+	public ArrayList<Patient> getPatientsList()
+	{		
+		return patients;	
+	}
+	public void setCurrentPatientId(int Id)
+	{
+		currentPatientId = Id;
+	}
+	public int getCurrentPatientId()
+	{
+		return currentPatientId;
+	}
+}
