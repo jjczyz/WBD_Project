@@ -28,27 +28,25 @@ public class MainWindow extends JFrame implements ActionListener {
 	{
 		populateAccountDataBase();
 		loggedInAs = -1;
-		while(loggedInAs == -1)
+		login = JOptionPane.showInputDialog("Wpisz login");
+		password = JOptionPane.showInputDialog("Wpisz has這");
+		
+		for(int i=0; i<accountList.size(); i++)
 		{
-			login = JOptionPane.showInputDialog("Wpisz login");
-			password = JOptionPane.showInputDialog("Wpisz has這");
-			
-			for(int i=0; i<accountList.size(); i++)
+			Konta account = accountList.get(i);
+			if(account.getLogin().equals(login))
 			{
-				Konta account = accountList.get(i);
-				if(account.getLogin().equals(login))
+				System.out.println("test");
+				if(account.getPassword().equals(password))
 				{
-					System.out.println("test");
-					if(account.getPassword().equals(password))
-					{
-						loggedInAs = account.getAccountType();
-						break;
-					}
+					loggedInAs = account.getAccountType();
+					break;
 				}
 			}
-			if(loggedInAs == -1)JOptionPane.showMessageDialog(null, "Niepoprawny login lub/i has這");
 		}
-			
+		if(loggedInAs == -1)JOptionPane.showMessageDialog(null, "Niepoprawny login lub/i has這");
+		else
+		{
 		this.setTitle("Cafe Control Panel");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(defaulMainFrametWidth, defaultMainFrameHeight);
@@ -58,6 +56,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		ctrlPane.setSize(defaulMainFrametWidth, defaultMainFrameHeight);
 		this.add(ctrlPane, BorderLayout.CENTER);
 		this.setVisible(true);
+		}
 	}
 	
 	public ControlPanel getCtrlPane(){
