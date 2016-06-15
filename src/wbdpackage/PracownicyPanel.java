@@ -183,10 +183,11 @@ public class PracownicyPanel extends JPanel implements ActionListener, MouseList
 		add(deleteButton, c);
 		c.gridx = 2;
 		c.gridy = 0;
-		c.gridheight = 10;
+		c.gridheight = 25;
 		add(new JScrollPane(tablePanel), c);
-		c.gridx = 2;
-		c.gridy = 10;
+		c.gridwidth = 2;
+		c.gridx = 0;
+		c.gridy = 18;
 		add(searchPanel, c);
 		
 		addButton.addActionListener(this);

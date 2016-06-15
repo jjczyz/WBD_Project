@@ -95,6 +95,13 @@ public class KawiarniaBAZA {
 	        		+"Wartosc Number NOT NULL"
 	        		+")";
 	        
+	        String createKontaFirmowe = "CREATE TABLE IF NOT EXISTS Konta_firmowe("
+	        		+"ID_konta INTEGER PRIMARY KEY AUTOINCREMENT,"
+	        		+"Login Varchar2(20 ) NOT NULL,"
+	        		+"Has³o Varchar2(20 ) NOT NULL,"
+	        		+"Typ_konta Number NOT NULL"
+	        		+")";
+	        
 	        try {
 	            stat.execute(createPracownicy);
 	            stat.execute(createFaktury);
@@ -102,6 +109,7 @@ public class KawiarniaBAZA {
 	            stat.execute(createProdukty);
 	            stat.execute(createZnizki);
 	            stat.execute(createPodatkiVat);
+	            stat.execute(createKontaFirmowe);
 	        } catch (SQLException e) {
 	            System.err.println("Blad przy tworzeniu tabeli");
 	            e.printStackTrace();
@@ -209,6 +217,22 @@ public class KawiarniaBAZA {
 	            prepStmt.execute();
 	        } catch (SQLException e) {
 	            System.err.println("Blad przy wstawianiu produktu");
+	            e.printStackTrace();
+	            return false;
+	        }
+	        return true;
+	    }
+	    
+	    public boolean insertKontaFirmowe(String login, String haslo, int typKonta) {
+	        try {
+	            PreparedStatement prepStmt = conn.prepareStatement(
+	                    "INSERT INTO Konta_firmowe VALUES (NULL, ?, ?, ?);");
+	            prepStmt.setString(1, login);	
+	            prepStmt.setString(2, haslo);
+	            prepStmt.setInt(3, typKonta);
+	            prepStmt.execute();
+	        } catch (SQLException e) {
+	            System.err.println("Blad przy wstawianiu konta firmowego");
 	            e.printStackTrace();
 	            return false;
 	        }
@@ -358,6 +382,27 @@ public class KawiarniaBAZA {
 	    	return podatkiVat;
 		}
 	    
+	    public List<KontaFirmowe> selectKontaFirmowe() {
+	    	List<KontaFirmowe> kontaFirmowe = new LinkedList<KontaFirmowe>();
+	    	try {
+	    		ResultSet result = stat.executeQuery("SELECT * FROM Konta_firmowe");
+	    		int idKonta, typKonta;
+		        String login, haslo;
+		        while(result.next()) {
+		            idKonta = result.getInt("ID_konta");
+		            login = result.getString("Login");
+		            haslo = result.getString("Has³o");
+		            typKonta = result.getInt("Typ_konta");
+		            
+		            kontaFirmowe.add(new KontaFirmowe(idKonta, login, haslo, typKonta));
+		        }
+	    	} catch (SQLException e) {
+	    		e.printStackTrace();
+		        return null;
+		    }
+	    	return kontaFirmowe;
+		}
+	    
 	    
 	    public boolean updateFaktury(int id, String data, float kwota, int idPracownika, int idZnizki) {
 	        try {
@@ -440,6 +485,24 @@ public class KawiarniaBAZA {
 	            prepStmt.execute();
 	        } catch (SQLException e) {
 	            System.err.println("Blad przy edytowaniu produktu");
+	            e.printStackTrace();
+	            return false;
+	        }
+	        return true;
+	    }
+	    
+	    public boolean updateKontaFirmowe(int id, String login, String haslo, String typKonta) {
+	        try {
+	            PreparedStatement prepStmt = conn.prepareStatement(
+	                    "UPDATE Konta_firmowe "
+	                    + "SET Login = ?, Has³o = ?, Typ_konta = ? "
+	                    + "WHERE ID_konta = "+id);
+	            prepStmt.setString(1, login);	
+	            prepStmt.setString(2, haslo);
+	            prepStmt.setString(3, typKonta);
+	            prepStmt.execute();
+	        } catch (SQLException e) {
+	            System.err.println("Blad przy edytowaniu konta firmowego");
 	            e.printStackTrace();
 	            return false;
 	        }

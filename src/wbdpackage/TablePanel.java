@@ -39,7 +39,7 @@ public class TablePanel extends JPanel{
 			model.addColumn(tableStrings[i]);
 		}
 		
-		table.setPreferredScrollableViewportSize(new Dimension(450,300));
+		table.setPreferredScrollableViewportSize(new Dimension(450,600));
 		table.setFillsViewportHeight(true);
 		if (table.getPreferredSize().width < table.getPreferredScrollableViewportSize().getWidth()) {
             table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
