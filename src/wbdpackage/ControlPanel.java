@@ -62,7 +62,6 @@ public class ControlPanel extends JPanel implements ActionListener{
 			case 1: 																				//kierownik
 				fakturyPanel = new FakturyPanel();
 				produktyPanel = new ProduktyPanel();
-				kontaPanel = new KontaPanel();
 				podatkiVatPanel = new PodatkiVatPanel();
 				pracownicyPanel = new PracownicyPanel();
 				wynagrodzeniaPanel = new WynagrodzeniaPanel();
@@ -70,7 +69,6 @@ public class ControlPanel extends JPanel implements ActionListener{
 				
 				tabbedPane.add("Faktury", fakturyPanel);
 				tabbedPane.add("Produkty", produktyPanel);
-				tabbedPane.add("Konta firmowe", kontaPanel);
 				tabbedPane.add("Podatki Vat", podatkiVatPanel);
 				tabbedPane.add("Pracownicy", pracownicyPanel);
 				tabbedPane.add("Wynagrodzenia", wynagrodzeniaPanel);

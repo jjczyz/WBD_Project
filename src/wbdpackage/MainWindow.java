@@ -55,6 +55,7 @@ public class MainWindow extends JFrame implements ActionListener {
 		ctrlPane = new ControlPanel(loggedInAs);
 		ctrlPane.setSize(defaulMainFrametWidth, defaultMainFrameHeight);
 		this.add(ctrlPane, BorderLayout.CENTER);
+		this.pack();
 		this.setVisible(true);
 		}
 	}
